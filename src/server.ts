@@ -25,7 +25,7 @@ const supabase = createClient(`${process.env.SUPABASE_URL}`, `${process.env.SUPA
 
 // Allowed frontend origins
 app.use(cors({
-    origin: ["http://localhost:5173", "http://192.168.1.104:5173"]
+    origin: process.env.FRONTEND_URL
 }));
 
 app.use(express.json({ limit: '50mb' }));
