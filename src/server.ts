@@ -14,14 +14,22 @@ const PORT =  Number(process.env.PORT) || 5009;
 // Database configuration
 const connectionString = process.env.DATABASE_URL
 
-if(!connectionString) {
-    throw new Error("DATABASE URI IS MISSING");
+if (!connectionString) {
+    throw new Error("DATABASE_URL is missing");
+}
+
+if (!process.env.SUPABASE_URL) {
+    throw new Error("SUPABASE_URL is missing");
+}
+
+if (!process.env.SUPABASE_SECRET_KEY) {
+    throw new Error("SUPABASE_SECRET_KEY is missing");
 }
 
 const sql = postgres(connectionString);
 
 // S3 Bucket Configuration
-const supabase = createClient(`${process.env.SUPABASE_URL}`, `${process.env.SUPABASE_SECRET_KEY}`);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
 
 // Allowed frontend origins
 app.use(cors({
