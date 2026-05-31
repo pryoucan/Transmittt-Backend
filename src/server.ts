@@ -30,11 +30,8 @@ if (!process.env.SUPABASE_SECRET_KEY) {
 const sql = postgres(connectionString);
 
 // S3 Bucket Configuration
-const supabase = createClient(`${process.env.SUPABASE_URL}`, `${process.env.SUPABASE_SECRET_KEY}`, {
-    global: {
-        WebSocket: ws
-    }
-});
+(global as any).WebSocket = ws;
+const supabase = createClient(`${process.env.SUPABASE_URL}`, `${process.env.SUPABASE_SECRET_KEY}`);
 
 // Allowed frontend origins
 app.use(cors({
