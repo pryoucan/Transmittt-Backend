@@ -50,7 +50,7 @@ app.get("/api/health", (req, res) => {
 });
 
 // Scheduler function for removing stale/old files
-nodeCron.schedule("* * * * *", async () => {
+nodeCron.schedule("0 6 * * 1-6", async () => {
     console.log("Cleaning...");
     try {
         await sql `Delete FROM file WHERE created_at < NOW() - INTERVAL '1 day'`
