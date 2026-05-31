@@ -53,7 +53,18 @@ app.get("/api/health", (req, res) => {
 nodeCron.schedule("0 6 * * 1-6", async () => {
     console.log("Cleaning...");
     try {
-        await sql `Delete FROM file WHERE created_at < NOW() - INTERVAL '1 day'`
+        const result = await sql `SELECT file_bucket_name FROM file WHERE created_at < NOW() - INTERVAL '.5 day'`;
+        console.log(result);
+        if(result.length) { 
+            let removalOfFiles:Array<string> = [];
+            for(let i = 0; i < result.length; i++) {
+                removalOfFiles.push(result[i].file_bucket_name);
+            }
+
+            deleteSupabaseStorageFile(removalOfFiles);
+
+        }
+        await sql `Delete FROM text WHERE created_at < NOW() - INTERVAL '.5 day'`;
         console.log("Cleanup service completed!");
     }
     catch(error) {
@@ -124,6 +135,18 @@ app.post("/api/files/upload", async (req, res) => {
         }
     });
 });
+
+// Delete route - file (supabase storage)
+const deleteSupabaseStorageFile = async (filesToBeRemoved:Array<string>) => {
+    const { data, error } = await supabase.storage.from("file").remove(filesToBeRemoved);
+    if(error) {
+        console.log("Supabase storage file deletion error", error);
+    }
+    else {
+        console.log("Supabase storage file deletion success");
+        await sql `Delete FROM file WHERE created_at < NOW() - INTERVAL '.5 day'`;
+    }
+};
 
 // Fetch route - combined files and text
 app.get("/api/files", async (req, res) => {
