@@ -5,6 +5,7 @@ import multer from "multer";
 import cors from "cors";
 import { createClient } from "@supabase/supabase-js";
 import ws from "ws";
+import nodeCron from "node-cron";
 
 const app = express();
 
@@ -46,6 +47,18 @@ app.get("/api/health", (req, res) => {
         success: true,
         message: "Server is healthy"
     });
+});
+
+// Scheduler function for removing stale/old files
+nodeCron.schedule("* * * * *", async () => {
+    console.log("Cleaning...");
+    try {
+        await sql `Delete FROM file WHERE created_at < NOW() - INTERVAL '1 day'`
+        console.log("Cleanup service completed!");
+    }
+    catch(error) {
+        console.log("Cleanup failed", error);
+    }
 });
 
 // Multer upload using memory-storage middleware
