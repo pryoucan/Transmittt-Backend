@@ -4,6 +4,7 @@ import postgres from 'postgres'
 import multer from "multer";
 import cors from "cors";
 import { createClient } from "@supabase/supabase-js";
+import ws from "ws";
 
 const app = express();
 
@@ -29,7 +30,11 @@ if (!process.env.SUPABASE_SECRET_KEY) {
 const sql = postgres(connectionString);
 
 // S3 Bucket Configuration
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
+const supabase = createClient(`${process.env.SUPABASE_URL}`, `${process.env.SUPABASE_SECRET_KEY}`, {
+    global: {
+        WebSocket: ws
+    }
+});
 
 // Allowed frontend origins
 app.use(cors({
