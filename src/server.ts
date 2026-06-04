@@ -76,7 +76,7 @@ nodeCron.schedule("0 6 * * 1-6", async () => {
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 15000000
+    fileSize: 150 * 1024 * 1024
   }
 }).single("file");
 
