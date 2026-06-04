@@ -39,7 +39,7 @@ app.use(cors({
     origin: process.env.FRONTEND_URL
 }));
 
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: '150mb' }));
 
 // Health checkpoint API
 app.get("/api/health", (req, res) => {
