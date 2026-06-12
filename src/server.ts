@@ -80,6 +80,13 @@ const upload = multer({
   }
 }).single("file");
 
+// Remove invalid characters
+function sanitizeFileName(name: string) {
+  return name
+    .normalize("NFKD")
+    .replace(/[^\w.\-]/g, "_");
+}
+
 // Upload route - File
 app.post("/api/files/upload", async (req, res) => {
     upload(req, res, async (err) => {
@@ -97,7 +104,8 @@ app.post("/api/files/upload", async (req, res) => {
 
         console.log("Uploading in S3 Bucket...");
 
-        const bucket_file_name = `${Date.now()}-${req.file.originalname}`;
+        const safeName = sanitizeFileName(req.file.originalname);
+        const bucket_file_name = `${Date.now()}-${safeName}`;
         const { data, error } = await supabase.storage.from("file")
         .upload(bucket_file_name, req.file.buffer, {
             contentType: req.file.mimetype
