@@ -50,7 +50,7 @@ app.get("/api/health", (req, res) => {
 });
 
 // Scheduler function for removing stale/old files
-nodeCron.schedule("0 6 * * 1-6", async () => {
+nodeCron.schedule("* * * * 1-6", async () => {
     console.log("Cleaning...");
     try {
         const result = await sql `SELECT file_bucket_name FROM file WHERE created_at < NOW() - INTERVAL '.5 day'`;
