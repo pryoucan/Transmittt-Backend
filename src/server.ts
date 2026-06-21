@@ -53,7 +53,7 @@ app.get("/api/health", (req, res) => {
 nodeCron.schedule("* * * * 1-6", async () => {
     console.log("Cleaning...");
     try {
-        const result = await sql `SELECT file_bucket_name FROM file WHERE created_at < NOW() - INTERVAL '.5 day'`;
+        const result = await sql `SELECT file_bucket_name FROM file`;
         console.log(result);
         if(result.length) { 
             let removalOfFiles:Array<string> = [];
@@ -64,7 +64,7 @@ nodeCron.schedule("* * * * 1-6", async () => {
             deleteSupabaseStorageFile(removalOfFiles);
 
         }
-        await sql `Delete FROM text WHERE created_at < NOW() - INTERVAL '.5 day'`;
+        await sql `Delete FROM text`;
         console.log("Cleanup service completed!");
     }
     catch(error) {
