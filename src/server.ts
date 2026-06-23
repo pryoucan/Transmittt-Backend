@@ -152,7 +152,7 @@ const deleteSupabaseStorageFile = async (filesToBeRemoved:Array<string>) => {
     }
     else {
         console.log("Supabase storage file deletion success");
-        await sql `Delete FROM file WHERE created_at < NOW() - INTERVAL '.5 day'`;
+        await sql `Delete FROM file`;
     }
 };
 
